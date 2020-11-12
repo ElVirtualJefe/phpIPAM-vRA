@@ -85,7 +85,8 @@ def do_get_ip_ranges(self, auth_credentials, cert):
                 ipRange["dnsServerAddresses"] = subnet["nameservers"]["namesrv1"].split(';')
             ipRange["subnetPrefixLength"] = subnetPrefixLength
             #ipRange["addressSpaceId"] = addressSpaceId
-            ipRange["domain"] = subnet["custom_Domain"]
+            if "custom_Domain" in subnet:
+                ipRange["domain"] = subnet["custom_Domain"]
             #ipRange["dnsSearchDomains"] = None
             #ipRange["properties"] = None
             #ipRange["tags"] = None
