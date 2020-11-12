@@ -1,0 +1,225 @@
+{
+   "layout":{
+      "pages":[
+         {
+            "id":"phpIPAM",
+            "title":"phpIPAM endpoint",
+            "sections":[
+               {
+                  "id":"config",
+                  "fields":[
+                     {
+                        "id":"hostName",
+                        "display":"textField",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     },
+                     {
+                        "id":"requireSSL",
+                        "display":"checkbox",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     },
+                     {
+                        "id":"appID",
+                        "display":"textField",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     },
+                     {
+                        "id":"sectionName",
+                        "display":"textField",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     },
+                     {
+                        "id":"authType",
+                        "display":"dropDown",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     }
+                  ]
+               },
+               {
+                  "id":"username_auth",
+                  "fields":[
+                     {
+                        "id":"privateKeyId",
+                        "display":"textField",
+                        "state":{
+                           "read-only":false,
+                           "visible": true
+                        }
+                     },
+                     {
+                        "id":"privateKey",
+                        "display":"passwordField",
+                        "state":{
+                           "read-only":false,
+                           "visible": true
+                        }
+                     }
+                  ],
+                  "state":{
+                     "visible":[{
+                        "equals":{
+                           "authType":"username"
+                        },
+                        "value":true
+                     },{
+                        "equals":{
+                           "authType":"token"
+                        },
+                        "value":false
+                     }]
+                  }
+               },
+               {
+                  "id":"token_auth",
+                  "fields":[
+                     {
+                        "id":"tokenKey",
+                        "display":"textField",
+                        "state":{
+                           "read-only":false,
+                           "visible":true
+                        }
+                     }
+                  ],
+                  "state":{
+                     "visible":[{
+                        "equals":{
+                           "authType":"username"
+                        },
+                        "value":false
+                     },{
+                        "equals":{
+                           "authType":"token"
+                        },
+                        "value":true
+                     }]
+                  }
+               }
+            ]
+         }
+      ]
+   },
+   "schema":{
+      "privateKeyId":{
+			"label":"Username",
+			"type":{
+				"dataType":"string"
+			},
+			"default":[{
+            "equals": {
+               "authType": "token"
+            },
+            "value": "token"
+         },{
+            "equals": {
+               "authType": "username"
+            },
+            "value": "username"
+         }],
+			"constraints":{
+				"required": true
+			}
+      },
+      "privateKey":{
+         "label":"Password",
+         "type":{
+            "dataType":"secureString"
+         },
+         "constraints":{
+            "required": true
+         },
+         "default":"Password1!"
+      },
+      "tokenKey":{
+         "label":"App Token Code",
+         "type":{
+            "dataType":"string"
+         },
+         "constraints":{
+            "required":[{
+               "equals": {
+                  "authType": "token"
+               },
+               "value": true
+            },
+            {
+               "equals": {
+                  "authType": "username"
+               },
+               "value": false
+            }]
+         },
+         "default":""
+      },
+      "hostName":{
+         "type":{
+            "dataType":"string"
+         },
+         "label":"Hostname",
+         "constraints":{
+            "required":true
+         },
+         "default": "phpipam.example.com"
+      },
+      "appID":{
+         "type":{
+            "dataType":"string"
+         },
+         "label":"API App ID",
+         "constraints":{
+            "required":true
+         }
+      },
+      "sectionName":{
+         "type":{
+            "dataType":"string"
+         },
+         "label":"Section Name",
+         "constraints":{
+            "required":true
+         }
+      },
+      "authType":{
+         "type":{
+            "dataType":"string"
+         },
+         "label":"Authentication Type",
+         "constraints":{
+            "required":true
+         },
+         "valueList":[{
+            "label":"Username/Password",
+            "value":"username"
+         }, {
+            "label":"API App Code",
+            "value":"token"
+         }],
+         "default":"username"
+      },
+      "requireSSL":{
+			"label":"Require SSL?",
+			"type":{
+				"dataType":"boolean"
+			},
+			"default":true,
+			"constraints":{
+				"required":false
+			}
+      }
+   }
+}
