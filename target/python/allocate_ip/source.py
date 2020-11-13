@@ -18,6 +18,7 @@ import requests
 from phpipam_utils.phpipam_client import phpipam_client
 # pylint: enable=import-error
 import logging
+import ipaddress
 
 """
 Example payload
@@ -78,6 +79,7 @@ Example payload
 
 def handler(context, inputs):
 
+    global phpipam
     phpipam = phpipam_client(context, inputs)
     phpipam_client.do_allocate_ip = do_allocate_ip
 
@@ -85,17 +87,22 @@ def handler(context, inputs):
 
 def do_allocate_ip(self, auth_credentials, cert):
 
-    username = auth_credentials["privateKeyId"]
-    password = auth_credentials["privateKey"]
     allocation_result = []
 
     try:
-        resource = self.inputs["resourceInfo"]
+        headers = {'Content-Type': 'application/json'}
+        headers['token'] = phpipam._get_auth_token(auth_credentials, cert)
+
+        ## Using this as a test for rolling back IP Allocations:
+        #allocation_result = {'ipAllocations': [{'ipAllocationId': '111bb2f0-02fd-4983-94d2-8ac11768150f', 'ipRangeId': '8', 'ipVersion': 'IPv4', 'ipAddresses': ['172.16.108.41', '172.16.108.64']}]}
+        #rollback(allocation_result,cert,headers)
+        #pass
+
         for allocation in self.inputs["ipAllocations"]:
-            allocation_result.append(allocate(resource, allocation, self.context, self.inputs["endpoint"]))
+            allocation_result.append(allocate(self, cert, headers, allocation))
     except Exception as e:
         try:
-            rollback(allocation_result)
+            rollback(allocation_result, cert, headers)
         except Exception as rollback_e:
             logging.error(f"Error during rollback of allocation result {str(allocation_result)}")
             logging.error(rollback_e)
@@ -106,46 +113,132 @@ def do_allocate_ip(self, auth_credentials, cert):
         "ipAllocations": allocation_result
     }
 
-def allocate(resource, allocation, context, endpoint):
+def allocate(self, cert, headers, allocation):
 
     last_error = None
-    for range_id in allocation["ipRangeIds"]:
+    #logging.info(str(allocation))
 
-        logging.info(f"Allocating from range {range_id}")
-        try:
-            return allocate_in_range(range_id, resource, allocation, context, endpoint)
-        except Exception as e:
-            last_error = e
-            logging.error(f"Failed to allocate from range {range_id}: {str(e)}")
+    i = 0
+    ipAddresses = []
 
-    logging.error("No more ranges. Raising last error")
-    raise last_error
+    while i < int(allocation["size"]):
 
+        for range_id in allocation["ipRangeIds"]:
 
-def allocate_in_range(range_id, resource, allocation, context, endpoint):
+            #logging.info(range_id)
 
-    ## Plug your implementation here to allocate an ip address
-    ## ...
-    ## Allocation successful
+            URL = phpipam._build_API_url(f"/subnets/{range_id}")
+
+            #logging.info(str(phpipam._API_get(URL,cert,headers).json()))
+            ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
+            #logging.info(str(ipRange))
+
+            logging.info(f"Allocating from range {ipRange['subnet'] + '/' + ipRange['mask']}")
+            try:
+                ipAddresses.append(allocate_in_range(self, range_id, allocation, cert, headers))
+                i += 1
+                break
+            except Exception as e:
+                last_error = e
+                logging.error(f"Failed to allocate from range {range_id}: {str(e)}")
+
+        if last_error is not None:
+            logging.error("No more ranges. Raising last error")
+            raise last_error
 
     result = {
         "ipAllocationId": allocation["id"],
         "ipRangeId": range_id,
-        "ipVersion": "IPv4"
+        "ipVersion": "IPv4",
+        "ipAddresses": ipAddresses
     }
-
-    result["ipAddresses"] = ["10.23.117.5"]
-    result["properties"] = {"customPropertyKey1": "customPropertyValue1"}
 
     return result
 
-## Rollback any previously allocated addresses in case this allocation request contains multiple ones and failed in the middle
-def rollback(allocation_result):
-    for allocation in reversed(allocation_result):
-        logging.info(f"Rolling back allocation {str(allocation)}")
-        ipAddresses = allocation.get("ipAddresses", None)
 
-        ## release the address
+def allocate_in_range(self, range_id, allocation, cert, headers):
+
+    ipRange = phpipam._API_get(
+        phpipam._build_API_url(f"/subnets/{range_id}"),
+        cert,
+        headers
+    ).json()["data"]
+    network = ipaddress.IPv4Network(ipRange["subnet"]+"/"+ipRange["mask"])
+
+    success = False
+
+    logging.info(f"phpIPAM allocat_in_range inputs: {self.inputs}")
+
+    try:
+
+        while not success:
+            URL = phpipam._build_API_url(f"/addresses/first_free/{range_id}")
+            resource = self.inputs.get("resourceInfo")
+            logging.info(f"phpIPAM Resource: {str(resource)}")
+
+            result = phpipam._API_get(URL, cert, headers).json()
+            if result["success"] == False:
+                raise Exception(f"IP not allocated: {result['message']}")
+
+            ipFirstFree = result["data"]
+            URL = phpipam._build_API_url("/addresses")
+
+            data = {}
+
+            data["ip"] = ipFirstFree
+            data["subnetId"] = int(range_id)
+            if network[1] == ipaddress.IPv4Address(ipFirstFree):
+                data["is_gateway"] = True
+            
+            if network[11] > ipaddress.IPv4Address(ipFirstFree):
+            
+                data["hostname"] = ""
+                data["note"] = "Allocated by vRealize Automation"
+                data["description"] = "Reserved for Network Team"
+                data["owner"] = "Daniel McIntire"
+                data["tag"] = int(phpipam._API_get(
+                    phpipam._build_API_url("/addresses/tags"),
+                    cert,
+                    headers,
+                    {
+                        'filter_by': 'type',
+                        'filter_value': 'Reserved',
+                        'filter_match': 'full'
+                    }
+                ).json()["data"][0]["id"])
+
+                logging.warning(f"Skipping and Reserving IP {ipFirstFree}")
+                result = phpipam._API_post(URL, cert, headers, data).json()
+                continue
+
+            else:
+                data["description"] = resource["description"]
+                data["note"] = "Allocated by vRealize Automation"
+                data["owner"] = resource["owner"]
+                data["port"] = allocation["nicIndex"]
+                data["hostname"] = resource["name"]
+
+                result = phpipam._API_post(URL, cert, headers, data).json()
+                if result["code"] == 201:
+                    return ipFirstFree
+                else:
+                    raise Exception(f"Not sure of result...  Please contact the Developer...  Result Code: {result['code']}, Result Message: {result['message']}")
+
+            if result["success"] == False:
+                raise Exception(f"IP not allocated: {result['message']}")
+
+    except Exception as e:
+        raise e
+
+## Rollback any previously allocated addresses in case this allocation request contains multiple ones and failed in the middle
+def rollback(allocation_result, cert, headers):
+    logging.info(allocation_result)
+    for allocation in reversed(allocation_result["ipAllocations"]):
+        logging.info(f"Rolling back allocation {str(allocation)}")
+        for allocatedIP in reversed(allocation.get("ipAddresses")):
+            URL = phpipam._build_API_url(f"/addresses/{allocatedIP}/{allocation['ipRangeId']}")
+            logging.info(f"Rolling back IP Allocation: {allocatedIP}")
+            phpipam._API_delete(URL,cert,headers)
 
     return
 

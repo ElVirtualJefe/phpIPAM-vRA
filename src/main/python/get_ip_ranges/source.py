@@ -49,9 +49,8 @@ def handler(context, inputs):
 
 def do_get_ip_ranges(self, auth_credentials, cert):
 
-    token = phpipam._get_auth_token(auth_credentials, cert)
     headers = {'Content-Type': 'application/json'}
-    headers['token'] = token
+    headers['token'] = phpipam._get_auth_token(auth_credentials, cert)
 
     URL = phpipam._build_API_url("/subnets")
 
@@ -67,7 +66,7 @@ def do_get_ip_ranges(self, auth_credentials, cert):
             cidr = network.with_prefixlen
             #logging.info(network[11])
             #startIpAddress = phpipam._API_get(phpipam._build_API_url('/subnets/'+subnet["id"]+'/first_free/'),cert,headers).json()["data"]
-            startIpAddress = network[11]
+            startIpAddress = str(network[11])
             endIpAddress = str(network[-2])
             # Build ipRange Object
             ipRange = {}
@@ -87,7 +86,7 @@ def do_get_ip_ranges(self, auth_credentials, cert):
             #ipRange["addressSpaceId"] = addressSpaceId
             if "custom_Domain" in subnet:
                 ipRange["domain"] = subnet["custom_Domain"]
-            #ipRange["dnsSearchDomains"] = None
+                ipRange["dnsSearchDomains"] = [subnet["custom_Domain"]]
             #ipRange["properties"] = None
             #ipRange["tags"] = None
             #logging.info(subnet["id"], cidr, subnet["description"], startIpAddress, endIpAddress, 'IPv4', addressSpaceId, gatewayAddress, subnetPrefixLength, dnsServerAddresses)

@@ -24,13 +24,12 @@ input = {
   "ipAllocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
     "ipRangeIds": [
-      "range/ZG5zLmRoY3BfcmFuZ2UkMTAuMTAuMjQuMjEvMTAuMTAuMjQuMjIvLy8xLw:10.10.24.21/10.10.24.22/mdzh-net", 
-      "range/ZG5zLmRoY3BfcmFuZ2UkMTAuMTAuMjQuMTAvMTAuMTAuMjQuMjAvLy8xLw:10.10.24.10/10.10.24.20/mdzh-net"
+      "8"
     ],
     #"ipRangeIds": ["network/ZG5zLm5ldHdvcmskMTAuMTAuMjMuMTYvMjgvMQ:10.10.23.16/28/mdzh-net"],
     "nicIndex": "0",
     "isPrimary": "true",
-    "size": "1",
+    "size": "2",
     "properties": {
         "__moref": "DistributedVirtualPortgroup:dvportgroup-307087",
         "__dvsUuid": "0c 8c 0b 50 46 b6 1c f2-e8 63 f4 24 24 d7 24 6c",
@@ -43,7 +42,12 @@ input = {
       "id": "112bb240-02fd-4983-9432-8ac11768150f",
       "endpointProperties": {
         "isMockRequest": "true",
-        "hostName": "infoblox.sof-mbu.eng.vmware.com",
+        "hostName": "phpipamtest.hcch.com",
+        "appID": "vRA",
+        #"appID": "creds",
+        "authType": "token",
+        #"authType": "username",
+        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",

@@ -1,7 +1,7 @@
 ---
 name: "phpIPAM"
 description: "phpIPAM integration for vRA"
-version: "00.02.60"
+version: "00.03.81"
 
 abxConfig:
   allocateIPActionId: "phpIPAM_AllocateIP"

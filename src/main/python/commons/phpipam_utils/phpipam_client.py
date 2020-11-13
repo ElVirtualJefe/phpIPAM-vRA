@@ -262,7 +262,7 @@ class phpipam_client(object):
 
         URL = self._build_API_url("/user")
 
-        response = self._API_post(URL, cert, {'Content-Type': 'application/json'}, (username,password))
+        response = self._API_post(URL, cert, {'Content-Type': 'application/json'}, {}, (username,password))
         #print(response.json()["data"]["token"])
 
         if response.status_code == 200:
@@ -271,22 +271,38 @@ class phpipam_client(object):
             logging.error(f"Invalid credentials error: {str(response.content)}")
             raise Exception(f"Invalid credentials error: {str(response.content)}")
 
-    def _API_get(self, URL, cert, headers):
+    def _API_get(self, URL, cert, headers, data={}, auth=None):
 
         logging.info(f"Making API GET Call to {URL}")
 
-        response = requests.get(url=URL, verify=cert, headers=headers)
+        response = requests.get(url=URL, verify=cert, headers=headers, json=data, auth=auth)
 
         return response
 
-    def _API_post(self, URL, cert, headers, auth):
+    def _API_post(self, URL, cert, headers, data={}, auth=None):
 
         logging.info(f"Making API POST Call to {URL}")
 
         if auth is not None:
-            response = requests.post(url=URL, verify=cert, headers=headers, auth=auth)
+            response = requests.post(url=URL, verify=cert, headers=headers, json=data, auth=auth)
         else:
-            response = requests.post(url=URL, verify=cert, headers=headers)
+            response = requests.post(url=URL, verify=cert, headers=headers, json=data)
+
+        return response
+
+    def _API_patch(self, URL, cert, headers, data={}, auth=None):
+
+        logging.info(f"Making API PATCH Call to {URL}")
+
+        response = requests.patch(url=URL, verify=cert, headers=headers, json=data, auth=auth)
+
+        return response
+
+    def _API_delete(self, URL, cert, headers, data={}, auth=None):
+
+        logging.info(f"Making API PATCH Call to {URL}")
+
+        response = requests.delete(url=URL, verify=cert, headers=headers, json=data, auth=auth)
 
         return response
 

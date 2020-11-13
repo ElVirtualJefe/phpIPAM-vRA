@@ -49,9 +49,8 @@ def handler(context, inputs):
 
 def do_get_ip_ranges(self, auth_credentials, cert):
 
-    token = phpipam._get_auth_token(auth_credentials, cert)
     headers = {'Content-Type': 'application/json'}
-    headers['token'] = token
+    headers['token'] = phpipam._get_auth_token(auth_credentials, cert)
 
     URL = phpipam._build_API_url("/subnets")
 
@@ -62,10 +61,12 @@ def do_get_ip_ranges(self, auth_credentials, cert):
         if re.fullmatch(r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', subnet["subnet"]) is None:
             continue
         if subnet["allowRequests"] == "1":
-            subnetPrefixLength = subnet["mask"]
-            cidr = subnet["subnet"]+"/"+subnetPrefixLength
-            network = ipaddress.IPv4Network(cidr)
-            startIpAddress = phpipam._API_get(phpipam._build_API_url('/subnets/'+subnet["id"]+'/first_free/'),cert,headers).json()["data"]
+            network = ipaddress.IPv4Network(subnet["subnet"]+"/"+subnet["mask"])
+            subnetPrefixLength = network.prefixlen
+            cidr = network.with_prefixlen
+            #logging.info(network[11])
+            #startIpAddress = phpipam._API_get(phpipam._build_API_url('/subnets/'+subnet["id"]+'/first_free/'),cert,headers).json()["data"]
+            startIpAddress = str(network[11])
             endIpAddress = str(network[-2])
             # Build ipRange Object
             ipRange = {}
@@ -76,15 +77,16 @@ def do_get_ip_ranges(self, auth_credentials, cert):
             ipRange["endIPAddress"] = endIpAddress
             ipRange["ipVersion"] = 'IPv4'
             if "gatewayId" in subnet:
-                pass
-                #gatewayIp = ipam.get("/addresses/"+subnet["gatewayId"]+"/")
-                #ipRange["gatewayAddress"] = gatewayIp["ip"]
+                #pass
+                gatewayIp = phpipam._API_get(phpipam._build_API_url("/addresses/"+subnet["gatewayId"]+"/"),cert,headers)
+                ipRange["gatewayAddress"] = gatewayIp["ip"]
             if "nameservers" in subnet:
                 ipRange["dnsServerAddresses"] = subnet["nameservers"]["namesrv1"].split(';')
             ipRange["subnetPrefixLength"] = subnetPrefixLength
             #ipRange["addressSpaceId"] = addressSpaceId
-            #ipRange["domain"] = phpIPAMProperties["phpIPAM.domain"]
-            #ipRange["dnsSearchDomains"] = None
+            if "custom_Domain" in subnet:
+                ipRange["domain"] = subnet["custom_Domain"]
+                ipRange["dnsSearchDomains"] = [subnet["custom_Domain"]]
             #ipRange["properties"] = None
             #ipRange["tags"] = None
             #logging.info(subnet["id"], cidr, subnet["description"], startIpAddress, endIpAddress, 'IPv4', addressSpaceId, gatewayAddress, subnetPrefixLength, dnsServerAddresses)
