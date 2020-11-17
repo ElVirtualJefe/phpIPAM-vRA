@@ -1,5 +1,3 @@
-from src.main.python.deallocate_ip.source import handler
-
 input = {
   "resourceInfo": {
     "id": "/resources/compute/226478cf7e3296b7",
@@ -25,8 +23,8 @@ input = {
   },
   "ipDeallocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
-    "ipAddress": "10.10.24.1",
-    "ipRangeId": "range/ZG5zLmRoY3BfcmFuZ2UkMTAuMTAuMjQuMjEvMTAuMTAuMjQuMjIvLy8xLw:10.10.24.21/10.10.24.22/mdzh-net",
+    "ipAddress": "172.16.108.9",
+    "ipRangeId": "8",
     "nicIndex": "0",
     "isPrimary": "true",
     "size": "1",
@@ -40,7 +38,13 @@ input = {
   }],
   "endpoint": {
       "endpointProperties": {
-        "hostName": "infoblox.sof-mbu.eng.vmware.com",
+        "isMockRequest": "true",
+        "hostName": "phpipamtest.hcch.com",
+        "appID": "vRA",
+        #"appID": "creds",
+        "authType": "token",
+        #"authType": "username",
+        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",
@@ -50,7 +54,20 @@ input = {
   }
 }
 
+import unittest
+from unittest import TestCase
 from unittest.mock import MagicMock
+from unittest.mock import Mock
+from unittest.mock import patch
+
+import sys, os
+print(os.path.abspath(''))
+sys.path.append(os.path.abspath('') + "\\src\\main\\python")
+
+# pylint: disable=import-error
+from deallocate_ip.source import handler
+# pylint: enable=import-error
+
 
 context = MagicMock()
 auth_credentials = {"status": 200, "content": "{\"privateKeyId\": \"admin\", \"privateKey\": \"VMware1!\"}"}

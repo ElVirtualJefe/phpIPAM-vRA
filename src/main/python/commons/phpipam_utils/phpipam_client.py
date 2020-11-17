@@ -111,6 +111,108 @@ class phpipam_client(object):
             if cert is not None and type(cert) is str:
                 os.unlink(cert)
 
+    def deallocate_ip(self):
+
+        cert = None
+        try:
+            auth_credentials = self._get_auth_credentials()
+            cert = self._get_cert()
+
+            result = self.do_deallocate_ip(auth_credentials, cert)
+
+            # Validation of returned result
+            err_msg = "{} is mandatory part of the response schema and must be present in the response"
+            assert result.get("ipDeallocations") is not None, err_msg.format("ipDeallocations")
+            assert isinstance(result["ipDeallocations"], list), "ipDeallocations must be a list type"
+            assert len(result["ipDeallocations"]) == len(self.inputs["ipDeallocations"]), "Size of ipDeallocations in the inputs is different than the one in the outputs"
+            for i in range(len(result["ipDeallocations"])):
+                assert result["ipDeallocations"][i].get("ipDeallocationId") is not None, err_msg.format(f"ipDeallocations[{i}]['ipDeallocationId']")
+
+                for deallocation in self.inputs["ipDeallocations"]:
+                    found = False
+                    if deallocation["id"] == result["ipDeallocations"][i]["ipDeallocationId"]:
+                        found = True
+                        break
+
+                    assert found, f"Deallocation result with id {result['ipDeallocations'][i]['ipDeallocationId']} not found"
+
+            return result
+        finally:
+            if cert is not None and type(cert) is str:
+                os.unlink(cert)
+
+    def update_record(self):
+
+        cert = None
+        try:
+            auth_credentials = self._get_auth_credentials()
+            cert = self._get_cert()
+
+            return self.do_update_record(auth_credentials, cert)
+        finally:
+            if cert is not None and type(cert) is str:
+                os.unlink(cert)
+
+    def get_ip_blocks(self):
+
+        cert = None
+        try:
+            auth_credentials = self._get_auth_credentials()
+            cert = self._get_cert()
+
+            result = self.do_get_ip_blocks(auth_credentials, cert)
+
+            # Validation of returned result
+            err_msg = "{} is mandatory part of the response schema and must be present in the response"
+            assert result.get("ipBlocks") is not None, err_msg.format("ipBlocks")
+            assert isinstance(result["ipBlocks"], list), "ipRanges must be a list type"
+            for i in range(len(result["ipBlocks"])):
+                assert result["ipBlocks"][i].get("id") is not None, err_msg.format(f"ipBlocks[{i}]['id']")
+                assert result["ipBlocks"][i].get("name") is not None, err_msg.format(f"ipBlocks[{i}]['name']")
+                assert result["ipBlocks"][i].get("ipBlockCIDR") is not None, err_msg.format(f"ipBlocks[{i}]['ipBlockCIDR']")
+                assert result["ipBlocks"][i].get("ipVersion") is not None, err_msg.format(f"ipBlocks[{i}]['ipVersion']")
+
+            return result
+        finally:
+            if cert is not None and type(cert) is str:
+                os.unlink(cert)
+
+    def allocate_ip_range(self):
+
+        cert = None
+        try:
+            auth_credentials = self._get_auth_credentials()
+            cert = self._get_cert()
+
+            result = self.do_allocate_ip_range(auth_credentials, cert)
+
+             # Validation of returned result
+            err_msg = "{} is mandatory part of the response schema and must be present in the response"
+            assert result.get("ipRange") is not None, err_msg.format("ipRange")
+            assert result["ipRange"].get("id") is not None, err_msg.format(f"ipRange['id']")
+            assert result["ipRange"].get("name") is not None, err_msg.format(f"ipRange['name']")
+            assert result["ipRange"].get("startIPAddress") is not None, err_msg.format(f"ipRange['startIPAddress']")
+            assert result["ipRange"].get("endIPAddress") is not None, err_msg.format(f"ipRange['endIPAddress']")
+            assert result["ipRange"].get("ipVersion") is not None, err_msg.format(f"ipRange['ipVersion']")
+            assert result["ipRange"].get("subnetPrefixLength") is not None, err_msg.format(f"ipRange['subnetPrefixLength']")
+
+            return result
+        finally:
+            if cert is not None and type(cert) is str:
+                os.unlink(cert)
+
+    def deallocate_ip_range(self):
+
+        cert = None
+        try:
+            auth_credentials = self._get_auth_credentials()
+            cert = self._get_cert()
+
+            return self.do_deallocate_ip_range(auth_credentials, cert)
+        finally:
+            if cert is not None and type(cert) is str:
+                os.unlink(cert)
+
     def do_validate_endpoint(self, auth_credentials, cert):
         raise Exception("Method do_validate_endpoint(self, auth_credentials, cert) not implemented")
 

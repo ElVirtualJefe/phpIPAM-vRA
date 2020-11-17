@@ -89,7 +89,7 @@ def do_allocate_ip(self, auth_credentials, cert):
 
     allocation_result = []
 
-    logging.info(f"phpIPAM do_allocate_ip inputs: {self.inputs}")
+    #logging.info(f"phpIPAM do_allocate_ip inputs: {self.inputs}")
 
     try:
         headers = {'Content-Type': 'application/json'}
@@ -169,14 +169,14 @@ def allocate_in_range(self, range_id, allocation, cert, headers):
 
     success = False
 
-    logging.info(f"phpIPAM allocat_in_range inputs: {self.inputs}")
+    #logging.info(f"phpIPAM allocat_in_range inputs: {self.inputs}")
 
     try:
 
         while not success:
             URL = phpipam._build_API_url(f"/addresses/first_free/{range_id}")
             resource = self.inputs.get("resourceInfo")
-            logging.info(f"phpIPAM Resource: {str(resource)}")
+            #logging.info(f"phpIPAM Resource: {str(resource)}")
 
             result = phpipam._API_get(URL, cert, headers).json()
             if result["success"] == False:
@@ -209,12 +209,15 @@ def allocate_in_range(self, range_id, allocation, cert, headers):
                     }
                 ).json()["data"][0]["id"])
 
-                logging.warning(f"Skipping and Reserving IP {ipFirstFree}")
+                logging.warning(f"Skipping IP {ipFirstFree} and Reserving for Network Team...")
                 result = phpipam._API_post(URL, cert, headers, data).json()
                 continue
 
             else:
-                data["description"] = resource["description"]
+                if "description" in resource:
+                    data["description"] = resource["description"]
+                else:
+                    data["description"] = "Description Missing - Allocated by vRealize Automation"
                 data["note"] = "Allocated by vRealize Automation"
                 data["owner"] = resource["owner"]
                 data["port"] = allocation["nicIndex"]

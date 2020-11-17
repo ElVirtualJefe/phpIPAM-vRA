@@ -24,12 +24,18 @@ input = {
   },
   "addressInfos": [{
     "nicIndex": 0,
-    "address": "10.23.117.1",
+    "address": "172.16.108.38",
     "macAddress": "00:30:26:a7:23:26"
   }],
   "endpoint": {
       "endpointProperties": {
-        "hostName": "infoblox.sof-mbu.eng.vmware.com",
+        "isMockRequest": "true",
+        "hostName": "phpipamtest.hcch.com",
+        "appID": "vRA",
+        #"appID": "creds",
+        "authType": "token",
+        #"authType": "username",
+        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",
@@ -44,6 +50,15 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import Mock
 from unittest.mock import patch
+
+import sys, os
+print(os.path.abspath(''))
+sys.path.append(os.path.abspath('') + "\\src\\main\\python")
+
+# pylint: disable=import-error
+from update_record.source import handler
+# pylint: enable=import-error
+
 
 context = MagicMock()
 auth_credentials = {"status": 200, "content": "{\"privateKeyId\": \"admin\", \"privateKey\": \"VMware1!\"}"}
