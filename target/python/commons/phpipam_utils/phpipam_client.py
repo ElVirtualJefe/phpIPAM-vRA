@@ -402,7 +402,7 @@ class phpipam_client(object):
 
     def _API_delete(self, URL, cert, headers, data={}, auth=None):
 
-        logging.info(f"Making API PATCH Call to {URL}")
+        logging.info(f"Making API DELETE Call to {URL}")
 
         response = requests.delete(url=URL, verify=cert, headers=headers, json=data, auth=auth)
 

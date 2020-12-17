@@ -12,7 +12,7 @@ RUN pip3 install -r /ipam/python/allocate_ip/requirements.txt --target=/ipam/pyt
 RUN pip3 install -r /ipam/python/deallocate_ip/requirements.txt --target=/ipam/python/deallocate_ip
 RUN pip3 install -r /ipam/python/get_ip_ranges/requirements.txt --target=/ipam/python/get_ip_ranges
 RUN pip3 install -r /ipam/python/validate_endpoint/requirements.txt --target=/ipam/python/validate_endpoint
-RUN if [ "false" = "true" ] ; then pip3 install -r /ipam/python/update_record/requirements.txt --target=/ipam/python/update_record ; fi
+RUN if [ "true" = "true" ] ; then pip3 install -r /ipam/python/update_record/requirements.txt --target=/ipam/python/update_record ; fi
 RUN if [ "false" = "true" ] ; then pip3 install -r /ipam/python/get_ip_blocks/requirements.txt --target=/ipam/python/get_ip_blocks ; fi
 RUN if [ "false" = "true" ] ; then pip3 install -r /ipam/python/allocate_ip_range/requirements.txt --target=/ipam/python/allocate_ip_range ; fi
 RUN if [ "false" = "true" ] ; then pip3 install -r /ipam/python/deallocate_ip_range/requirements.txt --target=/ipam/python/deallocate_ip_range ; fi

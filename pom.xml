@@ -17,16 +17,16 @@ conditions of the subcomponent's license, as noted in the LICENSE file.
 
     <groupId>com.vmware.cas.ipam.adapter</groupId>
     <artifactId>phpipam-vra</artifactId>
-    <version>00.08.00</version>
+    <version>00.08.10</version>
     <packaging>pom</packaging>
 
     <properties>
         <provider.name>phpIPAM</provider.name>
         <provider.description>phpIPAM integration for vRA</provider.description>
-        <provider.version>00.08.00</provider.version>
+        <provider.version>00.08.10</provider.version>
 
         <provider.supportsAddressSpaces>false</provider.supportsAddressSpaces>
-        <provider.supportsUpdateRecord>false</provider.supportsUpdateRecord>
+        <provider.supportsUpdateRecord>true</provider.supportsUpdateRecord>
         <provider.supportsOnDemandNetworks>false</provider.supportsOnDemandNetworks>
 
         <user.id>1000</user.id>

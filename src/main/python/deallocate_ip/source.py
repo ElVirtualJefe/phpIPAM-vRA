@@ -36,6 +36,8 @@ def do_deallocate_ip(self, auth_credentials, cert):
         headers = {'Content-Type': 'application/json'}
         headers['token'] = phpipam._get_auth_token(auth_credentials, cert)
 
+        logging.info(f"phpIPAM DEALLOCATE inputs: {self.inputs}")
+
         for deallocation in self.inputs["ipDeallocations"]:
             deallocation_result.append(deallocate(self, cert, headers, deallocation))
     except Exception as e:

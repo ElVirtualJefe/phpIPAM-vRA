@@ -24,7 +24,7 @@ input = {
   },
   "addressInfos": [{
     "nicIndex": 0,
-    "address": "172.16.108.38",
+    "address": "172.16.108.41",
     "macAddress": "00:30:26:a7:23:26"
   }],
   "endpoint": {
