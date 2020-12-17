@@ -23,7 +23,7 @@ input = {
   },
   "ipDeallocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
-    "ipAddress": "172.16.108.9",
+    "ipAddress": "172.16.108.41",
     "ipRangeId": "8",
     "nicIndex": "0",
     "isPrimary": "true",
