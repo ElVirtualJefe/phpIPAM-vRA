@@ -152,8 +152,22 @@ def allocate(self, cert, headers, allocation):
         "ipAllocationId": allocation["id"],
         "ipRangeId": range_id,
         "ipVersion": "IPv4",
-        "ipAddresses": ipAddresses
+        "ipAddresses": ipAddresses,
+        "subnetPrefixLength": ipRange["mask"],
+        "dnsServerAddresses": [],
+        "gatewayAddresses": [],
+        "dnsSearchDomains": [ipRange.get("custom_Domain","")],
+        "Domain": ipRange.get("custom_Domain","")
     }
+
+    if ipRange.get("gateway",None) is not None:
+        result["gatewayAddresses"].append(ipRange["gateway"]["ip_addr"])
+
+    if ipRange.get("nameservers",None) is not None:
+        for srvDNS in ipRange["nameservers"]["namesrv1"].split(";"):
+            result["dnsServerAddresses"].append(srvDNS)
+            
+    logging.info(result)
 
     return result
 

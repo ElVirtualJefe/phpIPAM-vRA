@@ -35,6 +35,20 @@ input = {
         "__computeType": "DistributedVirtualPortgroup",
         "__portgroupKey": "dvportgroup-307087"
     }
+  },{
+    "id": "111bb2f0-02fd-4983-84d2-8ac11768150f",
+    "ipAddress": "172.16.108.64",
+    "ipRangeId": "8",
+    "nicIndex": "0",
+    "isPrimary": "true",
+    "size": "1",
+    "properties": {
+        "__moref": "DistributedVirtualPortgroup:dvportgroup-307087",
+        "__dvsUuid": "0c 8c 0b 50 46 b6 1c f2-e8 63 f4 24 24 d7 24 6c",
+        "__dcSelfLink": "/resources/groups/abe46b8cfa663a7558b28a6ffe088",
+        "__computeType": "DistributedVirtualPortgroup",
+        "__portgroupKey": "dvportgroup-307087"
+    }
   }],
   "endpoint": {
       "endpointProperties": {

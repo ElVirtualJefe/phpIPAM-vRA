@@ -134,7 +134,7 @@ class phpipam_client(object):
                         found = True
                         break
 
-                    assert found, f"Deallocation result with id {result['ipDeallocations'][i]['ipDeallocationId']} not found"
+                assert found, f"Deallocation result with id {result['ipDeallocations'][i]['ipDeallocationId']} not found"
 
             return result
         finally:
