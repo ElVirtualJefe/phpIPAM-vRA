@@ -233,7 +233,7 @@ def allocate_in_range(self, range_id, allocation, cert, headers):
                 else:
                     data["description"] = "Description Missing - Allocated by vRealize Automation"
                 data["note"] = "Allocated by vRealize Automation"
-                data["owner"] = resource["owner"]
+                data["owner"] = "vRealize Automation"
                 data["port"] = allocation["nicIndex"]
                 data["hostname"] = resource["name"]
 
