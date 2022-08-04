@@ -1,18 +1,18 @@
 input = {
   "pagingAndSorting": {
-    "maxResults": 20,
+    "maxResults": 100,
     #"pageToken": "1"
   },
   "endpoint": {
       "id": "112bb240-02fd-4983-9432-8ac11768150f",
       "endpointProperties": {
         "isMockRequest": "true",
-        "hostName": "phpipamtest.hcch.com",
+        "hostName": "phpipam.hcch.com",
         "appID": "vRA",
         #"appID": "creds",
         "authType": "token",
         #"authType": "username",
-        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
+        "tokenKey": "2YKZuEqkk3ApmyNf9lS2pp30HeFfAng4",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",

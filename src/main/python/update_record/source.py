@@ -10,6 +10,7 @@ conditions of the subcomponent's license, as noted in the LICENSE file.
 """
 
 import sys, os
+
 print(os.path.abspath(''))
 sys.path.append(os.path.abspath('') + "\\src\\main\\python\\commons")
 
@@ -36,6 +37,9 @@ def do_update_record(self, auth_credentials, cert):
 
     update_result = []
 
+    if self.inputs["addressInfos"] == []:
+        return {[]}
+
     for update_record in self.inputs["addressInfos"]:
         update_result.append(update(self, cert, headers, update_record))
 
@@ -52,7 +56,11 @@ def update(self, cert, headers, update_record):
         ip = update_record["address"]
 
         URL = phpipam._build_API_url(f"/addresses/search/{ip}")
-        addressId = phpipam._API_get(URL,cert,headers).json()["data"][0]["id"]
+        res = phpipam._API_get(URL,cert,headers).json()
+        if res.get("success",False) == True:
+            addressId = res["data"][0]["id"]
+        else:
+            return "Failure"
 
         URL = phpipam._build_API_url(f"/addresses/{addressId}")
         data = {

@@ -53,6 +53,7 @@ Example payload
           "network/ZG5zLm5ldHdvcmskMTAuMjMuMTE3LjAvMjQvMA:10.23.117.0/24/default"
         ],
         "nicIndex": "0",
+        "start": "172.16.103.110",
         "isPrimary": "true",
         "size": "1",
         "properties": {
@@ -123,6 +124,14 @@ def allocate(self, cert, headers, allocation):
     i = 0
     ipAddresses = []
 
+    start = allocation.get("start",None)
+
+    if start != None:
+        i += 1
+        URL = phpipam._build_API_url(f"/addresses/")
+
+
+
     while i < int(allocation["size"]):
 
         for range_id in allocation["ipRangeIds"]:
@@ -147,6 +156,8 @@ def allocate(self, cert, headers, allocation):
         if last_error is not None:
             logging.error("No more ranges. Raising last error")
             raise last_error
+
+    
 
     result = {
         "ipAllocationId": allocation["id"],
@@ -211,7 +222,7 @@ def allocate_in_range(self, range_id, allocation, cert, headers):
                 data["hostname"] = ""
                 data["note"] = "Allocated by vRealize Automation"
                 data["description"] = "Reserved for Network Team"
-                data["owner"] = "Daniel McIntire"
+                data["owner"] = "Network Telecom"
                 data["tag"] = int(phpipam._API_get(
                     phpipam._build_API_url("/addresses/tags"),
                     cert,

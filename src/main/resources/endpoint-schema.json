@@ -47,6 +47,14 @@
                            "visible":true,
                            "read-only":false
                         }
+                     },
+                     {
+                        "id":"adv_settings",
+                        "display":"checkbox",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
                      }
                   ]
                },
@@ -105,6 +113,44 @@
                      },{
                         "equals":{
                            "authType":"token"
+                        },
+                        "value":true
+                     }]
+                  }
+               },
+               {
+                  "id":"advanced_settings",
+                  "fields":[
+                     {
+                        "id":"reserve_ips",
+                        "display":"checkbox",
+                        "state":{
+                           "visible":true,
+                           "read-only":false
+                        }
+                     },
+                     {
+                        "id":"num_reserve_ips",
+                        "display":"valuePicker",
+                        "state":{
+                           "visible":[{
+                              "equals":{
+                                 "reserve_ips":true
+                              },
+                              "value":true
+                           },{
+                              "equals":{
+                                 "reserve_ips":false
+                              },
+                              "value":false
+                           }]
+                        }
+                     }
+                  ],
+                  "state":{
+                     "visible":[{
+                        "equals":{
+                           "adv_settings":true
                         },
                         "value":true
                      }]
@@ -220,6 +266,36 @@
 			"constraints":{
 				"required":false
 			}
+      },
+      "adv_settings":{
+         "label":"Advanced Settings?",
+         "type":{
+            "dataType":"boolean"
+         },
+         "default":false,
+         "constraints":{
+            "required":false
+         }
+      },
+      "reserve_ips":{
+         "label":"Reserve IPs in each IP Range?",
+         "type":{
+            "dataType":"boolean"
+         },
+         "default":false,
+         "constraints":{
+            "required":false
+         }
+      },
+      "num_reserve_ips":{
+         "label":"Reserve IPs in each IP Range?",
+         "type":{
+            "dataType":"integer"
+         },
+         "default":1,
+         "constraints":{
+            "required":false
+         }
       }
    }
 }

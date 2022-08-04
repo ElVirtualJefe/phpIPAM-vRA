@@ -29,7 +29,8 @@ input = {
     #"ipRangeIds": ["network/ZG5zLm5ldHdvcmskMTAuMTAuMjMuMTYvMjgvMQ:10.10.23.16/28/mdzh-net"],
     "nicIndex": "0",
     "isPrimary": "true",
-    "size": "2",
+    "size": "1",
+    "start": "172.16.103.110",
     "properties": {
         "__moref": "DistributedVirtualPortgroup:dvportgroup-307087",
         "__dvsUuid": "0c 8c 0b 50 46 b6 1c f2-e8 63 f4 24 24 d7 24 6c",

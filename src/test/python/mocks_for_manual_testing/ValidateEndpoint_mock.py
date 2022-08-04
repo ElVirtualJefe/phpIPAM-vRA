@@ -35,7 +35,7 @@ input = {
         #"appID": "creds",
         "authType": "token",
         #"authType": "username",
-        "tokenKey": "48scVTKsLa_8cM3Q6khOndPaHSGUPvVH",
+        "tokenKey": "41foA3enDwfBACydKj0VN_nmQgOonbzd",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",
