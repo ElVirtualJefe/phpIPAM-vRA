@@ -1,0 +1,16 @@
+flask/
+*.pyc
+dev
+node_modules
+app/database.db
+postgres-data/
+app/build
+yarn.lock
+yarn-error.log
+*.psd
+venv**/
+env__/
+.vscode/
+**/__pycache__/
+postgres-data/
+.venv/
