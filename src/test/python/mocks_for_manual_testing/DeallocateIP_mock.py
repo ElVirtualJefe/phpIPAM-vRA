@@ -23,22 +23,8 @@ input = {
   },
   "ipDeallocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
-    "ipAddress": "172.16.108.41",
-    "ipRangeId": "8",
-    "nicIndex": "0",
-    "isPrimary": "true",
-    "size": "1",
-    "properties": {
-        "__moref": "DistributedVirtualPortgroup:dvportgroup-307087",
-        "__dvsUuid": "0c 8c 0b 50 46 b6 1c f2-e8 63 f4 24 24 d7 24 6c",
-        "__dcSelfLink": "/resources/groups/abe46b8cfa663a7558b28a6ffe088",
-        "__computeType": "DistributedVirtualPortgroup",
-        "__portgroupKey": "dvportgroup-307087"
-    }
-  },{
-    "id": "111bb2f0-02fd-4983-84d2-8ac11768150f",
-    "ipAddress": "172.16.108.64",
-    "ipRangeId": "8",
+    "ipAddress": "172.16.103.110",
+    "ipRangeId": "22",
     "nicIndex": "0",
     "isPrimary": "true",
     "size": "1",
@@ -58,7 +44,7 @@ input = {
         #"appID": "creds",
         "authType": "token",
         #"authType": "username",
-        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
+        "tokenKey": "41foA3enDwfBACydKj0VN_nmQgOonbzd",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",

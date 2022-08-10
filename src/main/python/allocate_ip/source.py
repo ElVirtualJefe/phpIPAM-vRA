@@ -127,37 +127,56 @@ def allocate(self, cert, headers, allocation):
     start = allocation.get("start",None)
 
     if start != None:
-        i += 1
-        URL = phpipam._build_API_url(f"/addresses/")
+        nextIP = start
+
+        while i < int(allocation["size"]):
+
+            logging.info(f"Allocating IP {nextIP}")
+
+            for range_id in allocation["ipRangeIds"]: 
+                URL = phpipam._build_API_url(f"/subnets/{range_id}")
+                ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
+
+                try:
+                    ipAddresses.append(allocate_specific_ip(self,nextIP,range_id,allocation,cert,headers))
+                    i += 1
+                    break
+                except Exception as e:
+                    last_error = e
+                    logging.error(f"Failed to allocate IP {nextIP}: {str(e)}")
 
 
+            if last_error is not None:
+                logging.error("No more IPs in range. Raising last error")
+                raise last_error
 
-    while i < int(allocation["size"]):
+    else:
+        while i < int(allocation["size"]):
 
-        for range_id in allocation["ipRangeIds"]:
+            for range_id in allocation["ipRangeIds"]:
 
-            #logging.info(range_id)
+                #logging.info(range_id)
 
-            URL = phpipam._build_API_url(f"/subnets/{range_id}")
+                URL = phpipam._build_API_url(f"/subnets/{range_id}")
 
-            #logging.info(str(phpipam._API_get(URL,cert,headers).json()))
-            ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
-            #logging.info(str(ipRange))
+                #logging.info(str(phpipam._API_get(URL,cert,headers).json()))
+                ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
+                #logging.info(str(ipRange))
 
-            logging.info(f"Allocating from range {ipRange['subnet'] + '/' + ipRange['mask']}")
-            try:
-                ipAddresses.append(allocate_in_range(self, range_id, allocation, cert, headers))
-                i += 1
-                break
-            except Exception as e:
-                last_error = e
-                logging.error(f"Failed to allocate from range {range_id}: {str(e)}")
+                logging.info(f"Allocating from range {ipRange['subnet'] + '/' + ipRange['mask']}")
+                try:
+                    ipAddresses.append(allocate_in_range(self, range_id, allocation, cert, headers))
+                    i += 1
+                    break
+                except Exception as e:
+                    last_error = e
+                    logging.error(f"Failed to allocate from range {range_id}: {str(e)}")
 
-        if last_error is not None:
-            logging.error("No more ranges. Raising last error")
-            raise last_error
+            if last_error is not None:
+                logging.error("No more ranges. Raising last error")
+                raise last_error
 
-    
+        
 
     result = {
         "ipAllocationId": allocation["id"],
@@ -182,6 +201,72 @@ def allocate(self, cert, headers, allocation):
 
     return result
 
+def allocate_specific_ip(self, ip, range_id, allocation, cert, headers):
+
+    ipRange = phpipam._API_get(
+        phpipam._build_API_url(f"/subnets/{range_id}"),
+        cert,
+        headers
+    ).json()["data"]
+
+    network = ipaddress.IPv4Network(ipRange["subnet"]+"/"+ipRange["mask"])
+
+    URL = phpipam._build_API_url(f"/subnets/{range_id}/addresses/{ip}")
+    res = phpipam._API_get(URL,cert,headers).json()
+    if res["success"] == False and res["code"] == 404:
+
+        data = {}
+        resource = self.inputs.get("resourceInfo")
+        URL = phpipam._build_API_url(f"/addresses/")
+        if network[1] == ipaddress.IPv4Address(ip):
+            data["is_gateway"] = True
+            
+        if network[11] > ipaddress.IPv4Address(ip):
+        
+            data["hostname"] = ""
+            data["note"] = "Allocated by vRealize Automation"
+            data["description"] = "Reserved for Network Team"
+            data["owner"] = "Network Telecom"
+            data["tag"] = int(phpipam._API_get(
+                phpipam._build_API_url("/addresses/tags"),
+                cert,
+                headers,
+                {
+                    'filter_by': 'type',
+                    'filter_value': 'Reserved',
+                    'filter_match': 'full'
+                }
+            ).json()["data"][0]["id"])
+
+            logging.warning(f"Skipping IP {ip} and Reserving for Network Team...")
+            result = phpipam._API_post(URL, cert, headers, data).json()
+
+            raise "Cannot allocate IP {ip} since it should be reserved for Network Team..."
+        
+
+        data = {
+            "subnetId":range_id,
+            "ip":ip,
+            "hostname":resource["name"],
+            "port":allocation["nicIndex"],
+            "owner":resource["owner"],
+            "note":"Allocated by vRealize Automation"
+        }
+        if "description" in resource:
+            data["description"] = resource["description"]
+        else:
+            data["description"] = "Description Missing - Allocated by vRealize Automation"
+
+        result = phpipam._API_post(URL, cert, headers, data).json()
+        if result["code"] == 201:
+            return ip
+        else:
+            raise Exception(f"Not sure of result...  Please contact the Developer...  Result Code: {result['code']}, Result Message: {result['message']}")
+
+    elif res["success"] == True and res["code"] == 200:
+        raise Exception(f"IP {ip} is already used...")
+
+    return
 
 def allocate_in_range(self, range_id, allocation, cert, headers):
 

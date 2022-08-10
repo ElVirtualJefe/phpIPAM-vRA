@@ -84,7 +84,7 @@ class phpipam_client(object):
 
             result = self.do_allocate_ip(auth_credentials, cert)
 
-              # Validation of returned result
+            # Validation of returned result
             err_msg = "{} is mandatory part of the response schema and must be present in the response"
             assert result.get("ipAllocations") is not None, err_msg.format("ipAllocations")
             assert isinstance(result["ipAllocations"], list), "ipAllocations must be a list type"

@@ -24,7 +24,7 @@ input = {
   "ipAllocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
     "ipRangeIds": [
-      "8"
+      "22"
     ],
     #"ipRangeIds": ["network/ZG5zLm5ldHdvcmskMTAuMTAuMjMuMTYvMjgvMQ:10.10.23.16/28/mdzh-net"],
     "nicIndex": "0",
@@ -48,7 +48,7 @@ input = {
         #"appID": "creds",
         "authType": "token",
         #"authType": "username",
-        "tokenKey": "wGX6p5HRE5BtEnz013Q8uxgCoq4azn26",
+        "tokenKey": "41foA3enDwfBACydKj0VN_nmQgOonbzd",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",
