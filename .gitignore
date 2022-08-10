@@ -11,6 +11,6 @@ yarn-error.log
 venv**/
 env__/
 .vscode/
+.venv/
 **/__pycache__/
 postgres-data/
-.venv/
