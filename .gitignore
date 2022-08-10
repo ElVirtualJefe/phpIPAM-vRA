@@ -14,3 +14,4 @@ env__/
 .venv/
 **/__pycache__/
 postgres-data/
+*.code-workspace
