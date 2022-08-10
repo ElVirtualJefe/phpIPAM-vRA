@@ -1,9 +1,0 @@
-{
-    "python.autoComplete.extraPaths": [
-        ".\\**\\commons\\**"
-    ],
-    "python.pythonPath": "c:\\Code\\phpipam-vra\\.venv\\Scripts\\python.exe",
-    "python.analysis.extraPaths": [
-        ".\\**\\commons\\**"
-    ]
-}
