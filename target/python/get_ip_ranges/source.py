@@ -60,10 +60,15 @@ def do_get_ip_ranges(self, auth_credentials, cert):
     for subnet in subnets:
         if re.fullmatch(r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}', subnet["subnet"]) is None:
             continue
+
+        #logging.info(f'Allow Requests = {subnet["allowRequests"]}')
         if subnet["allowRequests"] == "1":
+            net = phpipam._API_get(phpipam._build_API_url('/subnets/'+subnet["id"]+'/'),cert,headers).json()["data"]
             network = ipaddress.IPv4Network(subnet["subnet"]+"/"+subnet["mask"])
             subnetPrefixLength = network.prefixlen
             cidr = network.with_prefixlen
+            #logging.info(f'Populating subnet - {cidr}')
+            #logging.info(f'Subnet = {subnet}')
             #logging.info(network[11])
             #startIpAddress = phpipam._API_get(phpipam._build_API_url('/subnets/'+subnet["id"]+'/first_free/'),cert,headers).json()["data"]
             startIpAddress = str(network[11])
@@ -76,9 +81,12 @@ def do_get_ip_ranges(self, auth_credentials, cert):
             ipRange["startIPAddress"] = startIpAddress
             ipRange["endIPAddress"] = endIpAddress
             ipRange["ipVersion"] = 'IPv4'
-            if "gatewayId" in subnet:
+            if "gatewayId" in net:
+                #logging.info(f'gatewayId = {net["gatewayId"]}')
                 #pass
-                gatewayIp = phpipam._API_get(phpipam._build_API_url("/addresses/"+subnet["gatewayId"]+"/"),cert,headers)
+                gatewayIp = phpipam._API_get(phpipam._build_API_url("/addresses/"+net["gatewayId"]+"/"),cert,headers).json()["data"]
+                #logging.info(f'gatewayIp = {gatewayIp}')
+                #logging.info(f'IP = {gatewayIp["ip"]}')
                 ipRange["gatewayAddress"] = gatewayIp["ip"]
             if "nameservers" in subnet:
                 ipRange["dnsServerAddresses"] = subnet["nameservers"]["namesrv1"].split(';')

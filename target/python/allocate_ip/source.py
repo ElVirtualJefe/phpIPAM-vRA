@@ -126,7 +126,7 @@ def allocate(self, cert, headers, allocation):
 
     start = allocation.get("start",None)
 
-    if start != None:
+    if start != None and start != "0.0.0.0":
         nextIP = start
 
         while i < int(allocation["size"]):
