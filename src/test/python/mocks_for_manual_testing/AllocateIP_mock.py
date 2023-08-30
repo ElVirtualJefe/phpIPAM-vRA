@@ -24,13 +24,13 @@ input = {
   "ipAllocations": [{
     "id": "111bb2f0-02fd-4983-94d2-8ac11768150f",
     "ipRangeIds": [
-      "22"
+      "17"
     ],
     #"ipRangeIds": ["network/ZG5zLm5ldHdvcmskMTAuMTAuMjMuMTYvMjgvMQ:10.10.23.16/28/mdzh-net"],
     "nicIndex": "0",
     "isPrimary": "true",
     "size": "1",
-    "start": "172.16.103.110",
+    "start": "172.16.105.230",
     "properties": {
         "__moref": "DistributedVirtualPortgroup:dvportgroup-307087",
         "__dvsUuid": "0c 8c 0b 50 46 b6 1c f2-e8 63 f4 24 24 d7 24 6c",
@@ -43,12 +43,12 @@ input = {
       "id": "112bb240-02fd-4983-9432-8ac11768150f",
       "endpointProperties": {
         "isMockRequest": "true",
-        "hostName": "phpipamtest.hcch.com",
-        "appID": "vRA",
+        "hostName": "phpipam-dev.hcch.com",
+        "appID": "vRA-Dev",
         #"appID": "creds",
         "authType": "token",
         #"authType": "username",
-        "tokenKey": "41foA3enDwfBACydKj0VN_nmQgOonbzd",
+        "tokenKey": "Abebq_NftTctgKqgf76A1dsnIN29Q-iX",
         "projectId": "111bb2f0-02fd-4983-94d2-8ac11768150f",
         "providerId": "d8a5e3f2-d839-4365-af5b-f48de588fdc1",
         "isLocalEnv":"true",
