@@ -135,7 +135,7 @@ def allocate(self, cert, headers, allocation):
 
             for range_id in allocation["ipRangeIds"]: 
                 URL = phpipam._build_API_url(f"/subnets/{range_id}")
-                #ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
+                ipRange = phpipam._API_get(URL,cert,headers).json()["data"]
 
                 try:
                     ipAddresses.append(allocate_specific_ip(self,nextIP,range_id,allocation,cert,headers))
