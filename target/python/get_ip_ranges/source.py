@@ -82,7 +82,7 @@ def do_get_ip_ranges(self, auth_credentials, cert):
             ipRange["endIPAddress"] = endIpAddress
             ipRange["ipVersion"] = 'IPv4'
             if "gatewayId" in net:
-                #logging.info(f'gatewayId = {net["gatewayId"]}')
+                logging.info(f'gatewayId = {net["gatewayId"]}')
                 #pass
                 gatewayIp = phpipam._API_get(phpipam._build_API_url("/addresses/"+net["gatewayId"]+"/"),cert,headers).json()["data"]
                 #logging.info(f'gatewayIp = {gatewayIp}')
